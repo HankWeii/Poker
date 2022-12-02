@@ -1,16 +1,31 @@
 import React from 'react'
-import { useState } from 'react'; 
+import { useState, useEffect } from 'react'; 
 import { useSpring, animated, config } from 'react-spring';
+import PubSub from 'pubsub-js';
 import * as Sty  from './compoments'
 
 
 const AnimatedCardFront = animated(Sty.CardFront)
 const AnimatedCardBack = animated(Sty.CardBack)
 
+
 export default function Card(props) {
-    const {num, suits} = props
+
+    useEffect(()=>{
+        const token = PubSub.subscribe('nanisuits',(_,suits)=>{
+            setSuitsData(suitsData.suits = suits)
+        });
+        return ()=> {
+            PubSub.unsubscribe(token)
+        }
+    })
+
+    const {num} = props
     const [isFlip, setIsFlip] = useState(false);
-    
+    const [suitsData, setSuitsData] = useState({suits:'♠'});
+    const {suits} = suitsData;
+
+
     const handleClick = ()=>{
         setIsFlip(!isFlip);
     }
@@ -27,9 +42,9 @@ export default function Card(props) {
                     transform: transform.to(t=> `${t} rotateY(180deg)`)
                     }}/>
                 <AnimatedCardFront style={{opacity,transform}}>
-                    <span>{num}</span>
-                    <span>{suits}</span>
-                    <span>{num}</span>
+                    <span style={{color: suits === '♥'|| suits === '♦' ? 'red' : 'black'}}>{num}</span>
+                    <span style={{color: suits === '♥'|| suits === '♦' ? 'red' : 'black'}}>{suits}</span>
+                    <span style={{color: suits === '♥'|| suits === '♦' ? 'red' : 'black'}}>{num}</span>
                 </AnimatedCardFront>
             </Sty.CardWrapper>
         </div>

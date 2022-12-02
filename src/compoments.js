@@ -47,7 +47,6 @@ export const CardFront = styled(PokerDefault)`
         font-size: 20px;
         font-family: sans-serif;
         font-weight: bold;
-        color: black;
     }
     & > span:nth-child(2) {
         display: flex;
